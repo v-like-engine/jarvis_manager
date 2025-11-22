@@ -108,6 +108,80 @@ class TestCommandParser:
         assert launch['parsed_params']['action'] == 'launch'
         assert close['parsed_params']['action'] == 'close'
 
+    # Character switching tests
+
+    def test_switch_character_gerald_en(self, parser):
+        """Test switching to Gerald in English"""
+        result = parser.parse("Switch to Gerald", language="en", confidence=0.95)
+
+        assert result['command_type'] == CommandType.SWITCH_CHARACTER.value
+        assert result['parsed_params']['character_id'] == 'gerald'
+        assert result['language'] == 'en'
+
+    def test_switch_character_winnie_en(self, parser):
+        """Test switching to Winnie the Pooh in English"""
+        result = parser.parse("Change to Winnie the Pooh", language="en", confidence=0.93)
+
+        assert result['command_type'] == CommandType.SWITCH_CHARACTER.value
+        assert result['parsed_params']['character_id'] == 'winnie'
+
+    def test_switch_character_rapunzel_en(self, parser):
+        """Test switching to Rapunzel in English"""
+        result = parser.parse("Activate Rapunzel", language="en", confidence=0.94)
+
+        assert result['command_type'] == CommandType.SWITCH_CHARACTER.value
+        assert result['parsed_params']['character_id'] == 'rapunzel'
+
+    def test_switch_character_terminator_en(self, parser):
+        """Test switching to Terminator in English"""
+        result = parser.parse("Switch character to Terminator", language="en", confidence=0.92)
+
+        assert result['command_type'] == CommandType.SWITCH_CHARACTER.value
+        assert result['parsed_params']['character_id'] == 'terminator'
+
+    def test_switch_character_winnie_ru(self, parser):
+        """Test switching to Winnie in Russian"""
+        result = parser.parse("Переключись на Винни Пух", language="ru", confidence=0.91)
+
+        assert result['command_type'] == CommandType.SWITCH_CHARACTER.value
+        assert result['parsed_params']['character_id'] == 'winnie'
+        assert result['language'] == 'ru'
+
+    def test_switch_character_rapunzel_ru(self, parser):
+        """Test switching to Rapunzel in Russian"""
+        result = parser.parse("Смени на Рапунцель", language="ru", confidence=0.90)
+
+        assert result['command_type'] == CommandType.SWITCH_CHARACTER.value
+        assert result['parsed_params']['character_id'] == 'rapunzel'
+
+    def test_switch_character_terminator_ru(self, parser):
+        """Test switching to Terminator in Russian"""
+        result = parser.parse("Активируй Терминатор", language="ru", confidence=0.93)
+
+        assert result['command_type'] == CommandType.SWITCH_CHARACTER.value
+        assert result['parsed_params']['character_id'] == 'terminator'
+
+    def test_switch_character_gerald_ru(self, parser):
+        """Test switching to Gerald in Russian"""
+        result = parser.parse("Переключиться на Джеральд", language="ru", confidence=0.92)
+
+        assert result['command_type'] == CommandType.SWITCH_CHARACTER.value
+        assert result['parsed_params']['character_id'] == 'gerald'
+
+    def test_switch_character_variations(self, parser):
+        """Test different switch command variations"""
+        variations = [
+            ("Switch to Pooh", "en", "winnie"),
+            ("Change character to Princess Rapunzel", "en", "rapunzel"),
+            ("Activate Terminator mode", "en", "terminator"),
+            ("Включи режим Терминатора", "ru", "terminator"),
+        ]
+
+        for text, lang, expected_char in variations:
+            result = parser.parse(text, language=lang, confidence=0.90)
+            assert result['command_type'] == CommandType.SWITCH_CHARACTER.value
+            assert result['parsed_params']['character_id'] == expected_char
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

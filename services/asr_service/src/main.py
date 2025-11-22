@@ -27,7 +27,7 @@ from audio_input_manager import AudioInputManager
 from voice_detection import VoiceActivityDetector, SpeechSegmenter
 from speech_recognition import SpeechRecognizer
 from command_parser import CommandParser
-from tts_engine import TextToSpeech, GeraldVoice
+from tts_engine import TextToSpeech, GeraldVoice, CharacterVoiceProfile
 from face_recognition import FaceRecognizer
 from voice_biometrics import VoiceBiometrics, SpeakerVerifier
 from user_features_db import UserFeaturesDB
@@ -73,6 +73,28 @@ class ServiceStatus(BaseModel):
     audio_stats: Dict[str, Any]
     available_languages: List[str]
     users_count: int
+    active_character: Optional[str] = "gerald"
+
+
+class SetCharacterRequest(BaseModel):
+    """Set character request"""
+    character_id: str
+    language: Optional[str] = "en"
+
+
+class CharacterInfo(BaseModel):
+    """Character information"""
+    character_id: str
+    name: str
+    description: str
+    voice_settings: Dict[str, Any]
+
+
+class TestVoiceRequest(BaseModel):
+    """Test voice request"""
+    character_id: str
+    language: Optional[str] = "en"
+    test_text: Optional[str] = None
 
 
 # Global service state
@@ -98,6 +120,11 @@ class ASRServiceState:
 
         # Command callback
         self.command_callback = None
+
+        # Character management
+        self.active_character: str = "gerald"
+        self.character_tts_engines: Dict[str, Dict[str, TextToSpeech]] = {}
+        # Structure: {"character_id": {"en": TextToSpeech, "ru": TextToSpeech}}
 
 
 # Create global state
@@ -293,7 +320,8 @@ async def get_status():
         is_listening=state.is_listening,
         audio_stats=audio_stats,
         available_languages=available_languages,
-        users_count=len(users)
+        users_count=len(users),
+        active_character=state.active_character
     )
 
 
@@ -449,6 +477,163 @@ async def get_users():
     """Get all enrolled users"""
     users = await state.user_db.get_all_users_async()
     return {"users": users}
+
+
+# Character Management Endpoints
+
+@app.get("/asr/characters")
+async def get_characters():
+    """
+    Get list of available characters with their voice profiles.
+
+    Returns:
+        List of available characters with voice settings
+    """
+    characters = []
+
+    for char_id in CharacterVoiceProfile.get_available_characters():
+        profile = CharacterVoiceProfile.get_profile(char_id)
+
+        if profile:
+            characters.append(CharacterInfo(
+                character_id=char_id,
+                name=profile["name"],
+                description=profile["description"],
+                voice_settings={
+                    "english": profile["en"],
+                    "russian": profile["ru"]
+                }
+            ))
+
+    return {
+        "characters": characters,
+        "active_character": state.active_character
+    }
+
+
+@app.post("/asr/set_character")
+async def set_character(request: SetCharacterRequest):
+    """
+    Switch active character for TTS.
+
+    Args:
+        request: Character ID and language
+
+    Returns:
+        Status and character information
+    """
+    character_id = request.character_id.lower()
+    language = request.language
+
+    # Validate character
+    profile = CharacterVoiceProfile.get_profile(character_id)
+    if not profile:
+        available = CharacterVoiceProfile.get_available_characters()
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid character ID: {character_id}. Available: {available}"
+        )
+
+    # Create TTS engines for this character if not already created
+    if character_id not in state.character_tts_engines:
+        state.character_tts_engines[character_id] = {
+            "en": CharacterVoiceProfile.create_voice(character_id, "en"),
+            "ru": CharacterVoiceProfile.create_voice(character_id, "ru")
+        }
+
+    # Update active character
+    state.active_character = character_id
+
+    # Update main TTS engines to point to new character
+    state.tts_en = state.character_tts_engines[character_id]["en"]
+    state.tts_ru = state.character_tts_engines[character_id]["ru"]
+
+    logger.info(f"Switched to character: {character_id} ({profile['name']})")
+
+    return {
+        "status": "success",
+        "character_id": character_id,
+        "character_name": profile["name"],
+        "description": profile["description"],
+        "language": language
+    }
+
+
+@app.post("/asr/test_voice")
+async def test_voice(request: TestVoiceRequest):
+    """
+    Test character voice by speaking sample text.
+
+    Args:
+        request: Character ID, language, and optional test text
+
+    Returns:
+        Status of voice test
+    """
+    character_id = request.character_id.lower()
+    language = request.language
+
+    # Validate character
+    profile = CharacterVoiceProfile.get_profile(character_id)
+    if not profile:
+        available = CharacterVoiceProfile.get_available_characters()
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid character ID: {character_id}. Available: {available}"
+        )
+
+    # Get or create TTS engine for this character
+    if character_id not in state.character_tts_engines:
+        state.character_tts_engines[character_id] = {
+            "en": CharacterVoiceProfile.create_voice(character_id, "en"),
+            "ru": CharacterVoiceProfile.create_voice(character_id, "ru")
+        }
+
+    tts = state.character_tts_engines[character_id].get(language)
+    if not tts:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Language {language} not available for character {character_id}"
+        )
+
+    # Default test texts for each character
+    default_test_texts = {
+        "gerald": {
+            "en": "I am Gerald, your loyal virtual assistant. Ready to serve.",
+            "ru": "Я Джеральд, ваш верный виртуальный помощник. Готов служить."
+        },
+        "winnie": {
+            "en": "Oh bother. Think, think, think. Perhaps a little something to help me think.",
+            "ru": "Ох, беспокойство. Думай, думай, думай. Может быть, что-нибудь сладенькое поможет мне думать."
+        },
+        "rapunzel": {
+            "en": "Hello! I'm Rapunzel! This is so exciting! Let's explore the world together!",
+            "ru": "Привет! Я Рапунцель! Это так увлекательно! Давайте вместе исследовать мир!"
+        },
+        "terminator": {
+            "en": "I am Terminator. Mission objectives identified. Ready for execution.",
+            "ru": "Я Терминатор. Цели миссии определены. Готов к выполнению."
+        }
+    }
+
+    # Use custom text or default
+    test_text = request.test_text
+    if not test_text:
+        test_text = default_test_texts.get(character_id, {}).get(language, "Test voice.")
+
+    # Speak test text
+    tts.speak(test_text, blocking=False)
+
+    logger.info(f"Testing voice for {character_id} ({language}): {test_text}")
+
+    return {
+        "status": "speaking",
+        "character_id": character_id,
+        "character_name": profile["name"],
+        "language": language,
+        "test_text": test_text,
+        "voice_settings": profile[language] if language in ["en", "ru"] else profile["english"]
+    }
 
 
 def listening_worker():

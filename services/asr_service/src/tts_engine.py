@@ -350,12 +350,142 @@ class TextToSpeech:
         self.shutdown()
 
 
+class CharacterVoiceProfile:
+    """
+    Character voice profile with personality-specific TTS settings.
+
+    Supports multiple characters with unique voice characteristics.
+    """
+
+    # Voice profile definitions
+    PROFILES = {
+        "gerald": {
+            "name": "Gerald",
+            "description": "Strict knight, authoritative, commanding",
+            "en": {
+                "rate": 180,      # Steady, measured pace
+                "volume": 0.9,    # Strong, confident
+                "pitch": -20,     # Lower, authoritative
+                "gender": "male"
+            },
+            "ru": {
+                "rate": 175,      # Slightly slower for Russian
+                "volume": 0.9,
+                "pitch": -20,
+                "gender": "male"
+            }
+        },
+        "winnie": {
+            "name": "Винни Пух (Winnie the Pooh)",
+            "description": "Gentle, thoughtful, slow-paced, warm",
+            "en": {
+                "rate": 140,      # Slow, thoughtful
+                "volume": 0.8,    # Softer, gentle
+                "pitch": -10,     # Slightly lower, warm
+                "gender": "male"
+            },
+            "ru": {
+                "rate": 135,      # Even slower for Russian thoughtfulness
+                "volume": 0.8,
+                "pitch": -10,
+                "gender": "male"
+            }
+        },
+        "rapunzel": {
+            "name": "Rapunzel (Рапунцель)",
+            "description": "Disney princess, cheerful, curious, energetic",
+            "en": {
+                "rate": 190,      # Energetic, quick
+                "volume": 0.85,   # Bright, clear
+                "pitch": 15,      # Higher, cheerful
+                "gender": "female"
+            },
+            "ru": {
+                "rate": 185,      # Slightly slower for Russian
+                "volume": 0.85,
+                "pitch": 15,
+                "gender": "female"
+            }
+        },
+        "terminator": {
+            "name": "Терминатор (Terminator)",
+            "description": "Robotic, direct, monotone, stern, mechanical",
+            "en": {
+                "rate": 160,      # Mechanical, steady
+                "volume": 1.0,    # Loud, commanding
+                "pitch": -30,     # Very deep, robotic
+                "gender": "male"
+            },
+            "ru": {
+                "rate": 160,      # Same mechanical pace
+                "volume": 1.0,
+                "pitch": -30,
+                "gender": "male"
+            }
+        }
+    }
+
+    @classmethod
+    def get_profile(cls, character: str) -> Optional[Dict[str, Any]]:
+        """
+        Get voice profile for character.
+
+        Args:
+            character: Character ID (gerald, winnie, rapunzel, terminator)
+
+        Returns:
+            Voice profile dictionary or None
+        """
+        return cls.PROFILES.get(character.lower())
+
+    @classmethod
+    def get_available_characters(cls) -> List[str]:
+        """Get list of available character IDs"""
+        return list(cls.PROFILES.keys())
+
+    @classmethod
+    def create_voice(cls, character: str, language: str = "en") -> Optional[TextToSpeech]:
+        """
+        Create TTS engine for character.
+
+        Args:
+            character: Character ID
+            language: Language code (en or ru)
+
+        Returns:
+            Configured TextToSpeech instance or None
+        """
+        profile = cls.get_profile(character)
+        if not profile:
+            logger.error(f"Unknown character: {character}")
+            return None
+
+        lang_settings = profile.get(language, profile.get("en"))
+
+        logger.info(
+            f"Creating voice for {profile['name']} ({language}): "
+            f"rate={lang_settings['rate']}, pitch={lang_settings['pitch']}, "
+            f"volume={lang_settings['volume']}"
+        )
+
+        return TextToSpeech(
+            engine="pyttsx3",
+            rate=lang_settings["rate"],
+            volume=lang_settings["volume"],
+            pitch=lang_settings["pitch"],
+            language=language
+        )
+
+
 class GeraldVoice:
     """
     Gerald's character voice configuration.
 
     Provides pre-configured TTS settings for Gerald's strict,
     authoritative character personality.
+
+    NOTE: This class is kept for backward compatibility.
+    Use CharacterVoiceProfile for new implementations.
     """
 
     @staticmethod
@@ -366,13 +496,7 @@ class GeraldVoice:
         Returns:
             Configured TextToSpeech instance
         """
-        return TextToSpeech(
-            engine="pyttsx3",
-            rate=180,  # Steady, measured pace
-            volume=0.9,  # Strong, confident
-            pitch=-20,  # Lower, authoritative
-            language="en"
-        )
+        return CharacterVoiceProfile.create_voice("gerald", "en")
 
     @staticmethod
     def create_russian() -> TextToSpeech:
@@ -382,13 +506,7 @@ class GeraldVoice:
         Returns:
             Configured TextToSpeech instance
         """
-        return TextToSpeech(
-            engine="pyttsx3",
-            rate=175,  # Slightly slower for Russian
-            volume=0.9,
-            pitch=-20,
-            language="ru"
-        )
+        return CharacterVoiceProfile.create_voice("gerald", "ru")
 
 
 def test_tts():
@@ -404,18 +522,40 @@ def test_tts():
         for i, voice in enumerate(voices[:5]):  # Show first 5
             logger.info(f"  {i+1}. {voice['name']} ({voice['languages']})")
 
-        # Test English speech
-        logger.info("\nTesting English speech...")
-        gerald_en = GeraldVoice.create_english()
-        gerald_en.speak("Gerald is ready to serve.", blocking=True)
+        # Test all character voices
+        logger.info("\n=== Testing Character Voices ===")
 
-        # Test Russian speech
-        logger.info("\nTesting Russian speech...")
-        gerald_ru = GeraldVoice.create_russian()
-        gerald_ru.speak("Джеральд готов к работе.", blocking=True)
+        # Gerald - Strict Knight
+        logger.info("\n1. Testing Gerald (Strict Knight)...")
+        gerald_en = CharacterVoiceProfile.create_voice("gerald", "en")
+        gerald_en.speak("I am Gerald, your loyal virtual assistant. Ready to serve.", blocking=True)
 
-        # Test async speech
-        logger.info("\nTesting async speech...")
+        # Winnie the Pooh - Gentle and thoughtful
+        logger.info("\n2. Testing Winnie the Pooh (Gentle, Thoughtful)...")
+        winnie_en = CharacterVoiceProfile.create_voice("winnie", "en")
+        winnie_en.speak("Oh bother. Think, think, think. Perhaps a little something to help me think.", blocking=True)
+
+        winnie_ru = CharacterVoiceProfile.create_voice("winnie", "ru")
+        winnie_ru.speak("Ох, беспокойство. Думай, думай, думай. Может быть, что-нибудь сладенькое поможет мне думать.", blocking=True)
+
+        # Rapunzel - Cheerful Princess
+        logger.info("\n3. Testing Rapunzel (Cheerful Princess)...")
+        rapunzel_en = CharacterVoiceProfile.create_voice("rapunzel", "en")
+        rapunzel_en.speak("Hello! I'm Rapunzel! This is so exciting! Let's explore the world together!", blocking=True)
+
+        rapunzel_ru = CharacterVoiceProfile.create_voice("rapunzel", "ru")
+        rapunzel_ru.speak("Привет! Я Рапунцель! Это так увлекательно! Давайте вместе исследовать мир!", blocking=True)
+
+        # Terminator - Robotic
+        logger.info("\n4. Testing Terminator (Robotic, Direct)...")
+        terminator_en = CharacterVoiceProfile.create_voice("terminator", "en")
+        terminator_en.speak("I am Terminator. Mission objectives identified. Ready for execution.", blocking=True)
+
+        terminator_ru = CharacterVoiceProfile.create_voice("terminator", "ru")
+        terminator_ru.speak("Я Терминатор. Цели миссии определены. Готов к выполнению.", blocking=True)
+
+        # Test async speech with Gerald
+        logger.info("\n=== Testing Async Speech ===")
         gerald_en.speak_async("This is asynchronous speech.")
         gerald_en.speak_async("Multiple sentences can be queued.")
 
@@ -424,7 +564,20 @@ def test_tts():
 
         # Cleanup
         gerald_en.shutdown()
-        gerald_ru.shutdown()
+        winnie_en.shutdown()
+        winnie_ru.shutdown()
+        rapunzel_en.shutdown()
+        rapunzel_ru.shutdown()
+        terminator_en.shutdown()
+        terminator_ru.shutdown()
+
+        # Display character profiles
+        logger.info("\n=== Available Character Profiles ===")
+        for char_id in CharacterVoiceProfile.get_available_characters():
+            profile = CharacterVoiceProfile.get_profile(char_id)
+            logger.info(f"\n{profile['name']}: {profile['description']}")
+            logger.info(f"  EN: rate={profile['en']['rate']}, pitch={profile['en']['pitch']}, volume={profile['en']['volume']}")
+            logger.info(f"  RU: rate={profile['ru']['rate']}, pitch={profile['ru']['pitch']}, volume={profile['ru']['volume']}")
 
     except Exception as e:
         logger.error(f"TTS test failed: {e}")

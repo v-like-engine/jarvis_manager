@@ -18,6 +18,7 @@ class CommandType(Enum):
     APP_LAUNCH = "app_launch"
     APP_CLOSE = "app_close"
     RECOGNIZE_ME = "recognize_me"
+    SWITCH_CHARACTER = "switch_character"
     CHAT = "chat"
     SYSTEM = "system"
     FILE_OP = "file_op"
@@ -62,6 +63,10 @@ class CommandParser:
                 "en": ["recognize me", "who am i", "identify me", "who i am"],
                 "ru": ["узнай меня", "кто я", "распознай меня", "определи меня"]
             },
+            "switch_character": {
+                "en": ["switch to", "change to", "activate", "switch character to", "change character to"],
+                "ru": ["переключись на", "переключиться на", "смени на", "активируй", "включи режим"]
+            },
             "system": {
                 "en": ["shutdown", "restart", "reboot", "sleep", "lock", "logout"],
                 "ru": ["выключи компьютер", "перезагрузи", "перезагрузка", "спать", "заблокируй", "выход"]
@@ -77,6 +82,24 @@ class CommandParser:
             "music_control": {
                 "en": ["play", "pause", "stop music", "next", "previous", "volume"],
                 "ru": ["играй", "пауза", "останови музыку", "следующая", "предыдущая", "громкость"]
+            },
+            "character_names": {
+                "gerald": {
+                    "en": ["gerald", "sir gerald", "knight gerald"],
+                    "ru": ["джеральд", "сэр джеральд", "рыцарь джеральд"]
+                },
+                "winnie": {
+                    "en": ["winnie", "winnie the pooh", "pooh", "pooh bear"],
+                    "ru": ["винни", "винни пух", "пух", "медвежонок винни"]
+                },
+                "rapunzel": {
+                    "en": ["rapunzel", "princess rapunzel"],
+                    "ru": ["рапунцель", "принцесса рапунцель"]
+                },
+                "terminator": {
+                    "en": ["terminator", "terminator mode", "robot mode"],
+                    "ru": ["терминатор", "режим терминатора", "режим робота"]
+                }
             }
         }
 
@@ -201,6 +224,10 @@ class CommandParser:
             params["app_name"] = text
             params["action"] = "close"
 
+        elif cmd_type == CommandType.SWITCH_CHARACTER:
+            character_params = self._parse_character_switch(text, language)
+            params.update(character_params)
+
         elif cmd_type == CommandType.SYSTEM:
             params["action"] = self._parse_system_action(text, language)
 
@@ -316,6 +343,45 @@ class CommandParser:
                 volume_match = re.search(r"(\d+)", text)
                 if volume_match:
                     params["level"] = int(volume_match.group(1))
+
+        return params
+
+    def _parse_character_switch(self, text: str, language: str) -> Dict[str, Any]:
+        """
+        Parse character switching parameters.
+
+        Args:
+            text: Text containing character name
+            language: Language code
+
+        Returns:
+            Dictionary with character_id and character_name
+        """
+        params = {
+            "character_id": None,
+            "character_name": None
+        }
+
+        text_lower = text.lower()
+
+        # Get character names from config
+        character_names = self.config.get("character_names", {})
+
+        # Try to match character names
+        for char_id, names_dict in character_names.items():
+            if language not in names_dict:
+                continue
+
+            for name in names_dict[language]:
+                if name.lower() in text_lower:
+                    params["character_id"] = char_id
+                    params["character_name"] = name
+                    logger.info(f"Detected character switch to: {char_id} ({name})")
+                    return params
+
+        # If no match found, use the text as-is
+        params["character_name"] = text
+        logger.warning(f"Character not recognized: {text}")
 
         return params
 
@@ -449,6 +515,14 @@ def test_command_parser():
         ("Кто ты?", "ru"),
         ("Launch Chrome", "en"),
         ("Запусти Firefox", "ru"),
+        # Character switching tests
+        ("Switch to Rapunzel", "en"),
+        ("Переключись на Винни Пух", "ru"),
+        ("Activate Terminator", "en"),
+        ("Change to Gerald", "en"),
+        ("Смени на Рапунцель", "ru"),
+        ("Switch character to Winnie the Pooh", "en"),
+        ("Активируй Терминатор", "ru"),
     ]
 
     for text, lang in test_cases:

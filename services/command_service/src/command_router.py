@@ -9,6 +9,10 @@ from modules.terminal import TerminalExecutor
 from modules.file_ops import FileManager, DirectoryManager, FileBrowser
 from modules.settings import StartupManager, LanguageManager, PreferencesManager
 from modules.music_control import MusicController
+from modules.system_info import SystemInfoManager
+from modules.time_date import TimeDateManager
+from modules.calculator import Calculator
+from modules.screen_control import ScreenController
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +50,11 @@ class CommandRouter:
         self.preferences_manager = PreferencesManager()
 
         self.music_controller = MusicController()
+
+        self.system_info_manager = SystemInfoManager()
+        self.time_date_manager = TimeDateManager()
+        self.calculator = Calculator()
+        self.screen_controller = ScreenController()
 
         # Load app database
         self._load_app_database()
@@ -160,6 +169,90 @@ class CommandRouter:
             elif command_type == 'get_installed_apps':
                 return {'success': True, 'apps': self.app_database.get_all_apps()}
 
+            # Character switching (routes to both ASR and LLM services)
+            elif command_type == 'character_switch':
+                return self._handle_character_switch(params)
+
+            # System information commands
+            elif command_type == 'system_info_computer_name':
+                return self.system_info_manager.get_computer_name()
+            elif command_type == 'system_info_memory':
+                return self.system_info_manager.get_memory_info()
+            elif command_type == 'system_info_cpu':
+                return self.system_info_manager.get_cpu_usage()
+            elif command_type == 'system_info_disk':
+                return self.system_info_manager.get_disk_space(params.get('path', 'C:\\'))
+            elif command_type == 'system_info_os':
+                return self.system_info_manager.get_os_info()
+            elif command_type == 'system_info_network':
+                return self.system_info_manager.get_network_info()
+            elif command_type == 'system_info_uptime':
+                return self.system_info_manager.get_uptime()
+            elif command_type == 'system_info_all':
+                return self.system_info_manager.get_all_info()
+
+            # Time and date commands
+            elif command_type == 'time_get':
+                return self.time_date_manager.get_current_time()
+            elif command_type == 'date_get':
+                return self.time_date_manager.get_current_date()
+            elif command_type == 'datetime_get':
+                return self.time_date_manager.get_current_datetime()
+            elif command_type == 'weekday_get':
+                return self.time_date_manager.get_weekday()
+            elif command_type == 'alarm_set':
+                return self.time_date_manager.set_alarm(
+                    params.get('time'),
+                    params.get('message', 'Alarm!')
+                )
+            elif command_type == 'alarm_list':
+                return self.time_date_manager.list_alarms()
+            elif command_type == 'alarm_cancel':
+                return self.time_date_manager.cancel_alarm(params.get('alarm_id'))
+            elif command_type == 'timer_start':
+                return self.time_date_manager.start_timer(
+                    params.get('minutes', 1),
+                    params.get('message', 'Timer finished!')
+                )
+
+            # Calculator commands
+            elif command_type == 'calculate':
+                return self.calculator.calculate(params.get('expression', ''))
+            elif command_type == 'calculate_add':
+                return self.calculator.add(params.get('a'), params.get('b'))
+            elif command_type == 'calculate_subtract':
+                return self.calculator.subtract(params.get('a'), params.get('b'))
+            elif command_type == 'calculate_multiply':
+                return self.calculator.multiply(params.get('a'), params.get('b'))
+            elif command_type == 'calculate_divide':
+                return self.calculator.divide(params.get('a'), params.get('b'))
+
+            # Screen control commands
+            elif command_type == 'screen_lock':
+                return self.screen_controller.lock_screen()
+            elif command_type == 'screen_sleep':
+                return self.screen_controller.sleep()
+            elif command_type == 'screen_shutdown':
+                return self.screen_controller.shutdown(
+                    force=params.get('force', False),
+                    timeout=params.get('timeout', 60)
+                )
+            elif command_type == 'screen_restart':
+                return self.screen_controller.restart(
+                    force=params.get('force', False),
+                    timeout=params.get('timeout', 60)
+                )
+            elif command_type == 'screen_cancel_shutdown':
+                return self.screen_controller.cancel_shutdown()
+            elif command_type == 'screen_monitor_off':
+                return self.screen_controller.turn_off_monitor()
+            elif command_type == 'screen_monitor_on':
+                return self.screen_controller.turn_on_monitor()
+            elif command_type == 'screen_hibernate':
+                return self.screen_controller.hibernate()
+            elif command_type == 'screen_logoff':
+                return self.screen_controller.log_off()
+
             else:
                 return {
                     'success': False,
@@ -261,3 +354,39 @@ class CommandRouter:
     def _handle_dir_navigate(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle directory navigate command."""
         return self.directory_manager.navigate(params['dir_path'])
+
+    def _handle_character_switch(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Handle character switching command.
+
+        This command needs to be routed to both:
+        - ASR Service (for voice recognition personality)
+        - LLM Service (for response personality)
+
+        Args:
+            params: Contains 'character_name' key
+
+        Returns:
+            Dictionary with success status
+        """
+        character_name = params.get('character_name', '')
+
+        if not character_name:
+            return {
+                'success': False,
+                'error': 'No character name provided'
+            }
+
+        # Store character preference
+        self.preferences_manager.set('current_character', character_name)
+
+        logger.info(f"Character switched to: {character_name}")
+
+        # Return success - the actual routing to ASR/LLM will be handled by the main orchestrator
+        return {
+            'success': True,
+            'character_name': character_name,
+            'message': f"Character switched to {character_name}",
+            'requires_service_notification': True,  # Signal that ASR/LLM need to be notified
+            'notify_services': ['asr_service', 'llm_service']
+        }

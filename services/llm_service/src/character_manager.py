@@ -342,6 +342,88 @@ class CharacterManager:
             "current_emotion": self.current_emotion,
         }
 
+    def get_character_preview(
+        self,
+        character_name: Optional[str] = None,
+        language: str = "en"
+    ) -> Dict[str, Any]:
+        """
+        Get a preview of a character including sample responses
+
+        Args:
+            character_name: Name of character to preview, or None for current
+            language: Language for the preview
+
+        Returns:
+            Character preview with metadata and sample responses
+        """
+        char = self.get_character(character_name) if character_name else self.current_character
+
+        if not char:
+            return {"error": "No character available"}
+
+        # Get sample greeting
+        greeting_attr = f"greeting_{language}"
+        greetings = getattr(char.prompts, greeting_attr, [])
+        sample_greeting = greetings[0] if greetings else "Hello"
+
+        # Get sample confirmation
+        confirmation_attr = f"confirmation_{language}"
+        confirmations = getattr(char.prompts, confirmation_attr, [])
+        sample_confirmation = confirmations[0] if confirmations else "Confirmed"
+
+        # Get voice settings
+        voice = char.voice_settings.get(language, {}) if char.voice_settings else {}
+
+        return {
+            "name": char.name,
+            "version": char.version,
+            "description": char.description,
+            "archetype": char.personality.archetype,
+            "traits": char.personality.traits,
+            "communication_style": char.personality.communication_style,
+            "languages": char.language_support,
+            "voice_settings": voice,
+            "sample_responses": {
+                "greeting": sample_greeting,
+                "confirmation": sample_confirmation,
+            },
+            "response_rules": {
+                "max_length": char.response_rules.max_length,
+                "temperature": char.response_rules.temperature,
+                "prefer_short": char.response_rules.prefer_short_responses,
+            },
+            "available_emotions": list(char.emotions.keys()) if char.emotions else [],
+            "metadata": char.metadata if char.metadata else {},
+        }
+
+    def get_all_characters_info(self) -> List[Dict[str, Any]]:
+        """
+        Get information about all available characters
+
+        Returns:
+            List of character information dictionaries
+        """
+        characters_info = []
+
+        for char_name in self.characters.keys():
+            try:
+                char = self.characters[char_name]
+                characters_info.append({
+                    "name": char.name,
+                    "internal_name": char_name,
+                    "version": char.version,
+                    "description": char.description,
+                    "archetype": char.personality.archetype,
+                    "languages": char.language_support,
+                    "traits": char.personality.traits[:5],  # First 5 traits
+                    "metadata": char.metadata if char.metadata else {},
+                })
+            except Exception as e:
+                logger.warning(f"Failed to get info for character {char_name}: {e}")
+
+        return characters_info
+
 
 if __name__ == "__main__":
     # Test the character manager

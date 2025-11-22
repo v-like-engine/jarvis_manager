@@ -13,7 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Official Python and JavaScript SDKs
 - Improved face recognition accuracy
 - GPU acceleration for LLM inference
-- Additional characters (Jarvis, Friday)
+- Additional characters (Rapunzel, Terminator)
+- Calculator commands implementation
+- Screen control commands (brightness, resolution)
+- Time/date query commands integration
+- Custom wake word support ("Hey Gerald")
 
 ### Planned for v1.2.0
 - Advanced music control (Spotify integration)
@@ -44,7 +48,11 @@ First public release of Gerald Desktop Manager - a voice-controlled desktop mana
 - **Voice Control**: Complete voice command system for Windows control
 - **Offline Operation**: 100% local processing, no internet required after setup
 - **Bilingual Support**: Full English and Russian language support
-- **Character System**: Gerald character with extensible personality framework
+- **Character System**: Multiple character personalities with extensible framework
+  - Gerald (Loyal Knight) - Strict, authoritative, direct
+  - Winnie Pooh (Gentle Bear) - Kind, thoughtful, philosophical
+- **System Information**: Query system stats (CPU, RAM, disk, network, uptime)
+- **Simple Launcher**: User-friendly `start_gerald.py` with built-in help
 
 #### ASR Service (Agent 1)
 - Speech recognition using Vosk (English and Russian models)

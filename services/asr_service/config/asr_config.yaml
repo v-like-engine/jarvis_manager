@@ -58,12 +58,75 @@ tts:
     volume: 0.9  # 0.0 to 1.0
     voice_id: null  # null = default, or specific voice ID
 
-  # Gerald's voice personality
-  character:
-    name: "gerald"
-    pitch: -20  # Lower pitch for authoritative sound
-    rate_modifier: 1.0
-    volume_modifier: 1.0
+  # Active character
+  active_character: "gerald"  # Current active character
+
+  # Character voice profiles
+  # Each character has unique voice settings for personality expression
+  character_profiles:
+    gerald:
+      name: "Gerald"
+      description: "Strict knight, authoritative, commanding"
+      english:
+        rate: 180        # Words per minute - steady, measured pace
+        volume: 0.9      # 0.0 to 1.0 - strong, confident
+        pitch: -20       # -50 to 50 - lower, authoritative
+        gender: "male"
+        voice_id: null   # null = auto-select
+      russian:
+        rate: 175        # Slightly slower for Russian
+        volume: 0.9
+        pitch: -20
+        gender: "male"
+        voice_id: null
+
+    winnie:
+      name: "Винни Пух (Winnie the Pooh)"
+      description: "Gentle, thoughtful, slow-paced, warm"
+      english:
+        rate: 140        # Slow, thoughtful
+        volume: 0.8      # Softer, gentle
+        pitch: -10       # Slightly lower, warm
+        gender: "male"
+        voice_id: null
+      russian:
+        rate: 135        # Even slower for thoughtfulness
+        volume: 0.8
+        pitch: -10
+        gender: "male"
+        voice_id: null
+
+    rapunzel:
+      name: "Rapunzel (Рапунцель)"
+      description: "Disney princess, cheerful, curious, energetic"
+      english:
+        rate: 190        # Energetic, quick
+        volume: 0.85     # Bright, clear
+        pitch: 15        # Higher, cheerful
+        gender: "female"
+        voice_id: null
+      russian:
+        rate: 185        # Slightly slower for Russian
+        volume: 0.85
+        pitch: 15
+        gender: "female"
+        voice_id: null
+
+    terminator:
+      name: "Терминатор (Terminator)"
+      description: "Robotic, direct, monotone, stern, mechanical"
+      english:
+        rate: 160        # Mechanical, steady
+        volume: 1.0      # Loud, commanding
+        pitch: -30       # Very deep, robotic
+        gender: "male"
+        voice_id: null
+      russian:
+        rate: 160        # Same mechanical pace
+        volume: 1.0
+        pitch: -30
+        gender: "male"
+        voice_id: null
 
 # Face Recognition
 face_recognition:
@@ -121,3 +184,23 @@ commands:
   system:
     en: ["shutdown", "restart", "sleep", "lock"]
     ru: ["выключи", "перезагрузи", "спать", "заблокируй"]
+
+  # Character switching commands
+  switch_character:
+    en: ["switch to", "change to", "activate", "switch character to", "change character to"]
+    ru: ["переключись на", "переключиться на", "смени на", "активируй", "включи режим"]
+
+  # Character name patterns for recognition
+  character_names:
+    gerald:
+      en: ["gerald", "sir gerald", "knight gerald"]
+      ru: ["джеральд", "сэр джеральд", "рыцарь джеральд"]
+    winnie:
+      en: ["winnie", "winnie the pooh", "pooh", "pooh bear"]
+      ru: ["винни", "винни пух", "пух", "медвежонок винни"]
+    rapunzel:
+      en: ["rapunzel", "princess rapunzel"]
+      ru: ["рапунцель", "принцесса рапунцель"]
+    terminator:
+      en: ["terminator", "terminator mode", "robot mode"]
+      ru: ["терминатор", "режим терминатора", "режим робота"]

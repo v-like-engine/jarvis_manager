@@ -241,6 +241,7 @@ async def set_character(request: SetCharacterRequest):
     Switch to a different character
 
     Changes the current character and optionally sets language and emotion.
+    Returns enhanced metadata including sample responses and voice settings.
     """
     try:
         char_manager = service_state["character_manager"]
@@ -262,11 +263,24 @@ async def set_character(request: SetCharacterRequest):
         if request.emotion:
             char_manager.set_emotion(request.emotion)
 
+        # Get enhanced character info
+        char_info = char_manager.get_character_info()
+        voice_settings = char_manager.get_voice_settings()
+
+        # Get sample greeting
+        sample_greeting = char_manager.get_template(
+            "greeting",
+            char_manager.current_language
+        )
+
         return {
             "status": "success",
             "character": request.character,
             "language": char_manager.current_language,
             "emotion": char_manager.current_emotion,
+            "character_info": char_info,
+            "voice_settings": voice_settings,
+            "sample_greeting": sample_greeting,
         }
 
     except HTTPException:
@@ -281,7 +295,7 @@ async def list_characters():
     """
     List all available characters
 
-    Returns a list of character names and their basic information.
+    Returns a list of character names and their detailed information.
     """
     try:
         char_manager = service_state["character_manager"]
@@ -289,24 +303,12 @@ async def list_characters():
         if not char_manager:
             raise HTTPException(status_code=503, detail="Service not initialized")
 
-        characters = char_manager.list_characters()
-
-        # Get detailed info for each character
-        characters_info = []
-        for char_name in characters:
-            try:
-                char = char_manager.get_character(char_name)
-                characters_info.append({
-                    "name": char.name,
-                    "description": char.description,
-                    "archetype": char.personality.archetype,
-                    "languages": char.language_support,
-                })
-            except Exception as e:
-                logger.warning(f"Failed to get info for character {char_name}: {e}")
+        # Get all characters info using the new method
+        characters_info = char_manager.get_all_characters_info()
 
         return {
             "characters": characters_info,
+            "count": len(characters_info),
             "current_character": char_manager.current_character.name if char_manager.current_character else None,
         }
 
@@ -314,6 +316,41 @@ async def list_characters():
         raise
     except Exception as e:
         logger.error(f"Error listing characters: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/llm/characters/{character_name}/preview")
+async def get_character_preview(character_name: str, language: str = "en"):
+    """
+    Get a preview of a specific character
+
+    Returns detailed character information including sample responses,
+    voice settings, and personality traits.
+    """
+    try:
+        char_manager = service_state["character_manager"]
+
+        if not char_manager:
+            raise HTTPException(status_code=503, detail="Service not initialized")
+
+        try:
+            preview = char_manager.get_character_preview(
+                character_name=character_name,
+                language=language
+            )
+
+            if "error" in preview:
+                raise HTTPException(status_code=404, detail=preview["error"])
+
+            return preview
+
+        except ValueError as e:
+            raise HTTPException(status_code=404, detail=str(e))
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting character preview: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -436,6 +473,7 @@ async def root():
             "/llm/generate",
             "/llm/set_character",
             "/llm/characters",
+            "/llm/characters/{character_name}/preview",
             "/llm/clear_context",
             "/llm/status",
             "/llm/model_info",

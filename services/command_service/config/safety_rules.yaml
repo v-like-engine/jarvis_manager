@@ -14,9 +14,42 @@ safe_commands:
   - volume_up
   - volume_down
   - volume_mute
+  - volume_set
   - language_switch
+  - language_set
   - get_running_apps
   - get_installed_apps
+  # Character switching
+  - character_switch
+  # System information (all safe - read-only)
+  - system_info_computer_name
+  - system_info_memory
+  - system_info_cpu
+  - system_info_disk
+  - system_info_os
+  - system_info_network
+  - system_info_uptime
+  - system_info_all
+  # Time and date (all safe - read-only or alarm setting)
+  - time_get
+  - date_get
+  - datetime_get
+  - weekday_get
+  - alarm_set
+  - alarm_list
+  - alarm_cancel
+  - timer_start
+  # Calculator (safe - computation only)
+  - calculate
+  - calculate_add
+  - calculate_subtract
+  - calculate_multiply
+  - calculate_divide
+  # Screen control - non-destructive operations
+  - screen_lock
+  - screen_monitor_off
+  - screen_monitor_on
+  - screen_cancel_shutdown
 
 # Commands that require user confirmation before execution
 confirmation_required:
@@ -26,7 +59,15 @@ confirmation_required:
   - terminal_command
   - registry_modify
   - startup_modify
+  - startup_enable
+  - startup_disable
   - process_kill
+  # Screen control - potentially disruptive operations
+  - screen_sleep
+  - screen_shutdown
+  - screen_restart
+  - screen_hibernate
+  - screen_logoff
 
 # Command patterns that should never be executed
 forbidden_patterns:
@@ -39,8 +80,10 @@ forbidden_patterns:
   - "reg delete HKLM"
   - "reg delete HKEY_LOCAL_MACHINE"
   - "deltree"
-  - "shutdown /s"
-  - "shutdown -s"
+  # Note: shutdown/restart are allowed through screen_control module with confirmation
+  # Direct command-line shutdown without confirmation is forbidden
+  - "shutdown /s /f /t 0"  # Immediate forced shutdown
+  - "shutdown -s -f -t 0"  # Immediate forced shutdown
 
 # System paths that should be protected from modification
 protected_paths:
