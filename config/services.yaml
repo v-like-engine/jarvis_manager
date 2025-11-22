@@ -1,0 +1,105 @@
+# Service Orchestration Configuration
+# Defines how services communicate and coordinate
+
+# Service Registry
+services:
+  asr:
+    name: "ASR Service"
+    description: "Speech recognition, TTS, face/voice recognition"
+    host: "localhost"
+    port: 8001
+    healthcheck: "/status"
+    enabled: true
+    startup_order: 1
+    dependencies: []
+
+  llm:
+    name: "LLM Service"
+    description: "Natural language generation with character personality"
+    host: "localhost"
+    port: 8002
+    healthcheck: "/llm/status"
+    enabled: true
+    startup_order: 2
+    dependencies: []
+
+  command:
+    name: "Command Service"
+    description: "System command execution"
+    host: "localhost"
+    port: 8003
+    healthcheck: "/status"
+    enabled: true
+    startup_order: 3
+    dependencies: []
+
+# Communication Protocols
+communication:
+  # Primary: HTTP REST
+  type: "http"
+  timeout: 30
+  retries: 3
+
+  # Alternative: Message Queue (future)
+  # type: "messagequeue"
+  # broker: "redis://localhost:6379"
+
+# Data Flow
+# Voice Input → ASR → Command Parser → Router
+#                                    ├─→ Command Service (if recognized command)
+#                                    └─→ LLM Service (if chat/unrecognized)
+#
+# Command Service → (if unsafe) → LLM Service (confirmation prompt) → ASR (speak)
+# LLM Service → ASR (speak response)
+
+# Integration Points
+integration:
+  # ASR → Command Service
+  asr_to_command:
+    endpoint: "http://localhost:8003/commands/execute"
+    command_types:
+      - app_launch
+      - app_close
+      - file_op
+      - terminal
+      - music_control
+      - system
+      - settings
+
+  # ASR → LLM Service
+  asr_to_llm:
+    endpoint: "http://localhost:8002/llm/generate"
+    triggers:
+      - chat
+      - unrecognized
+      - help_request
+
+  # Command Service → LLM Service
+  command_to_llm:
+    endpoint: "http://localhost:8002/llm/generate"
+    scenarios:
+      - confirmation_request
+      - safety_warning
+      - error_explanation
+
+  # LLM Service → ASR Service
+  llm_to_asr:
+    endpoint: "http://localhost:8001/asr/speak"
+    trigger: response_ready
+
+# Service Monitoring
+monitoring:
+  healthcheck_interval: 30  # seconds
+  restart_on_failure: true
+  max_restart_attempts: 3
+
+# Logging
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  log_dir: "logs"
+  service_logs:
+    asr: "logs/asr_service.log"
+    llm: "logs/llm_service.log"
+    command: "logs/command_service.log"
+    main: "logs/gerald_main.log"

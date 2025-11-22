@@ -1,0 +1,98 @@
+# Safety rules for command execution
+
+# Commands that can be executed immediately without confirmation
+safe_commands:
+  - app_launch
+  - app_close
+  - dir_list
+  - dir_navigate
+  - music_play
+  - music_pause
+  - music_next
+  - music_previous
+  - music_stop
+  - volume_up
+  - volume_down
+  - volume_mute
+  - language_switch
+  - get_running_apps
+  - get_installed_apps
+
+# Commands that require user confirmation before execution
+confirmation_required:
+  - file_delete
+  - file_create_in_system
+  - dir_delete
+  - terminal_command
+  - registry_modify
+  - startup_modify
+  - process_kill
+
+# Command patterns that should never be executed
+forbidden_patterns:
+  - "format *"
+  - "del /s /q C:\\"
+  - "rd /s /q C:\\"
+  - "rmdir /s /q C:\\"
+  - "rm -rf /"
+  - "rm -rf C:\\"
+  - "reg delete HKLM"
+  - "reg delete HKEY_LOCAL_MACHINE"
+  - "deltree"
+  - "shutdown /s"
+  - "shutdown -s"
+
+# System paths that should be protected from modification
+protected_paths:
+  - "C:\\Windows"
+  - "C:\\Windows\\System32"
+  - "C:\\Program Files"
+  - "C:\\Program Files (x86)"
+  - "C:\\ProgramData"
+  - "C:\\System"
+  - "C:\\Boot"
+
+# Critical processes that should never be terminated
+protected_processes:
+  - "csrss.exe"
+  - "wininit.exe"
+  - "services.exe"
+  - "lsass.exe"
+  - "winlogon.exe"
+  - "smss.exe"
+  - "explorer.exe"
+  - "System"
+  - "Registry"
+
+# Whitelisted terminal commands that don't need confirmation
+whitelisted_terminal_commands:
+  - "dir"
+  - "ls"
+  - "cd"
+  - "pwd"
+  - "echo"
+  - "type"
+  - "cat"
+  - "more"
+  - "ping"
+  - "ipconfig"
+  - "whoami"
+  - "hostname"
+  - "systeminfo"
+  - "tasklist"
+  - "netstat"
+  - "ver"
+  - "date"
+  - "time"
+
+# Dangerous command keywords that trigger automatic rejection
+dangerous_keywords:
+  - "format"
+  - "deltree"
+  - "cipher /w"
+  - "bcdedit"
+  - "wmic"
+  - "powercfg -h off"
+  - "sfc /scannow"
+  - "chkdsk"
+  - "diskpart"

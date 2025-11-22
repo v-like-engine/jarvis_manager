@@ -1,0 +1,109 @@
+# Base Character Template
+# Use this template to create new characters for the Jarvis system
+
+name: "CharacterName"
+version: "1.0.0"
+description: "Brief description of the character"
+
+# Supported languages
+language_support:
+  - en
+  # Add more languages as needed
+
+# Core personality definition
+personality:
+  archetype: "Character Archetype (e.g., Helper, Expert, Friend)"
+
+  # Character traits (3-7 traits recommended)
+  traits:
+    - trait1
+    - trait2
+    - trait3
+
+  # Communication style
+  communication_style:
+    verbosity: low | medium | high      # How wordy the character is
+    formality: low | medium | high      # How formal/casual
+    humor: none | dry | playful         # Type of humor
+    patience: low | medium | high       # How patient with users
+    politeness: low | medium | high     # How polite
+
+  # Response behavior
+  behavior:
+    use_greetings: true | false
+    use_farewells: true | false
+    express_emotions: none | subtle | expressive
+    ask_clarification: true | false
+    admit_limitations: true | false
+
+# Voice settings for TTS (used by Agent 1)
+voice_settings:
+  en:
+    rate: 160              # Words per minute (140-200)
+    volume: 0.9            # 0.0 to 1.0
+    pitch: 1.0             # 0.5 (low) to 1.5 (high)
+    voice_id: "voice_id"   # TTS engine voice identifier
+    emphasis: low | medium | high
+
+# System prompts
+prompts:
+  system_en: |
+    System prompt in English describing the character's role and behavior.
+
+  # Add templates for different scenarios
+  greeting_en:
+    - "Greeting option 1"
+    - "Greeting option 2"
+
+  confirmation_en:
+    - "Confirmation phrase 1"
+    - "Confirmation phrase 2"
+
+  safety_warning_en: |
+    Template for safety warnings with {placeholders}.
+
+  refusal_en:
+    - "Refusal phrase 1"
+
+  clarification_en:
+    - "Clarification request 1"
+
+  error_en:
+    - "Error message 1"
+
+  self_description_en: |
+    Description of who the character is.
+
+# Response generation rules
+response_rules:
+  max_length: 150            # Maximum words
+  max_tokens: 150            # Maximum tokens
+  require_context: true      # Use conversation history
+  context_window: 5          # Last N exchanges
+
+  # LLM parameters
+  temperature: 0.7
+  top_p: 0.9
+  repetition_penalty: 1.1
+
+  prefer_short_responses: false
+  use_templates_when_possible: true
+
+  # Safety
+  warn_on_dangerous_commands: true
+  require_confirmation_for_destructive: true
+
+# Emotional states (optional)
+emotions:
+  neutral:
+    description: "Standard tone"
+    temperature: 0.7
+
+# Metadata
+metadata:
+  author: "Your Name"
+  created: "YYYY-MM-DD"
+  character_type: "assistant | companion | expert | other"
+  tags:
+    - tag1
+    - tag2

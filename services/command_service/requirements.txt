@@ -1,0 +1,37 @@
+# Command Service Dependencies
+# Core web framework
+fastapi>=0.104.0
+uvicorn>=0.24.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Windows API and system utilities
+pywin32>=306
+psutil>=5.9.0
+wmi>=1.5.1
+
+# Fuzzy string matching for app discovery
+rapidfuzz>=3.5.0
+
+# Audio control
+pycaw>=20181226
+
+# Automation (for media keys)
+pyautogui>=0.9.54
+keyboard>=0.13.5
+
+# Configuration
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Async file operations
+aiofiles>=23.0.0
+
+# HTTP client for internal service communication
+httpx>=0.25.0
+
+# Message queue
+aio-pika>=9.3.0
+
+# Utilities
+python-multipart>=0.0.6

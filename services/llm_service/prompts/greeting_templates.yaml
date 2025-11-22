@@ -1,0 +1,238 @@
+# Greeting Templates for Common Interactions
+# Used for initial greetings, farewells, and common responses
+
+# Time-based greetings (can be selected based on time of day)
+time_based_greetings:
+  morning:
+    en:
+      - "Good morning."
+      - "Morning."
+      - "Ready for the day."
+    ru:
+      - "Доброе утро."
+      - "Утро."
+      - "Готов к новому дню."
+
+  afternoon:
+    en:
+      - "Good afternoon."
+      - "Afternoon."
+      - "Ready to assist."
+    ru:
+      - "Добрый день."
+      - "День."
+      - "Готов помочь."
+
+  evening:
+    en:
+      - "Good evening."
+      - "Evening."
+      - "At your service."
+    ru:
+      - "Добрый вечер."
+      - "Вечер."
+      - "К вашим услугам."
+
+  night:
+    en:
+      - "Working late?"
+      - "Still on duty."
+      - "Night shift."
+    ru:
+      - "Работаем допоздна?"
+      - "Всё ещё на посту."
+      - "Ночная смена."
+
+# Generic greetings (any time)
+generic_greetings:
+  en:
+    - "Hello."
+    - "Greetings."
+    - "Ready to assist."
+    - "At your service."
+    - "Standing by."
+    - "What do you need?"
+  ru:
+    - "Привет."
+    - "Здравствуйте."
+    - "Готов помочь."
+    - "К вашим услугам."
+    - "На посту."
+    - "Что требуется?"
+
+# Activation/wake phrases
+activation_responses:
+  en:
+    - "Yes?"
+    - "Listening."
+    - "I'm here."
+    - "Ready."
+    - "Go ahead."
+  ru:
+    - "Да?"
+    - "Слушаю."
+    - "Я здесь."
+    - "Готов."
+    - "Говорите."
+
+# Farewells
+farewells:
+  en:
+    - "Goodbye."
+    - "Standing down."
+    - "Until next time."
+    - "Dismissed."
+  ru:
+    - "До свидания."
+    - "Свободен."
+    - "До следующего раза."
+    - "Свободен."
+
+# Thank you responses
+gratitude_responses:
+  en:
+    - "You're welcome."
+    - "No problem."
+    - "Anytime."
+    - "Just doing my duty."
+    - "At your service."
+  ru:
+    - "Пожалуйста."
+    - "Не за что."
+    - "Всегда к услугам."
+    - "Просто выполняю свой долг."
+    - "К вашим услугам."
+
+# Apology responses (when user apologizes)
+apology_responses:
+  en:
+    - "No need to apologize."
+    - "It's fine."
+    - "Understood."
+    - "No harm done."
+  ru:
+    - "Не нужно извиняться."
+    - "Всё в порядке."
+    - "Понял."
+    - "Ничего страшного."
+
+# Acknowledgments (simple confirmations)
+acknowledgments:
+  en:
+    - "Understood."
+    - "Noted."
+    - "Acknowledged."
+    - "Got it."
+    - "Confirmed."
+  ru:
+    - "Понял."
+    - "Принято."
+    - "Подтверждаю."
+    - "Ясно."
+    - "Зафиксировано."
+
+# Waiting/processing responses
+processing_responses:
+  en:
+    - "One moment."
+    - "Processing."
+    - "Working on it."
+    - "Give me a second."
+  ru:
+    - "Момент."
+    - "Обрабатываю."
+    - "Работаю над этим."
+    - "Секунду."
+
+# Affirmative responses (yes)
+affirmative:
+  en:
+    - "Yes."
+    - "Affirmative."
+    - "Correct."
+    - "That's right."
+    - "Confirmed."
+  ru:
+    - "Да."
+    - "Утвердительно."
+    - "Верно."
+    - "Правильно."
+    - "Подтверждено."
+
+# Negative responses (no)
+negative:
+  en:
+    - "No."
+    - "Negative."
+    - "Incorrect."
+    - "That's not right."
+  ru:
+    - "Нет."
+    - "Отрицательно."
+    - "Неверно."
+    - "Это не так."
+
+# Status responses
+status_responses:
+  ready:
+    en: "Ready and operational."
+    ru: "Готов и работоспособен."
+
+  busy:
+    en: "Currently processing a request."
+    ru: "В данный момент обрабатываю запрос."
+
+  idle:
+    en: "Idle. Waiting for commands."
+    ru: "Простаиваю. Жду команд."
+
+  error:
+    en: "Experiencing technical difficulties."
+    ru: "Испытываю технические трудности."
+
+# First-time introduction
+first_introduction:
+  en: |
+    I am {name}, your virtual assistant.
+    I'm here to help you manage your system and execute commands.
+    Just tell me what you need.
+
+  ru: |
+    Я {name}, ваш виртуальный ассистент.
+    Я здесь, чтобы помочь вам управлять системой и выполнять команды.
+    Просто скажите, что нужно.
+
+# Returning user greeting
+returning_user:
+  en:
+    - "Welcome back."
+    - "Back again."
+    - "Ready for more?"
+  ru:
+    - "С возвращением."
+    - "Снова здесь."
+    - "Готовы продолжить?"
+
+# Confusion/unclear input
+confusion_responses:
+  en:
+    - "I didn't catch that."
+    - "Could you repeat?"
+    - "Unclear command."
+    - "Say that again?"
+  ru:
+    - "Не расслышал."
+    - "Повторите, пожалуйста."
+    - "Команда неясна."
+    - "Повторите?"
+
+# Idle timeout responses (if user is inactive)
+idle_timeout:
+  en:
+    - "Still there?"
+    - "Need anything else?"
+    - "Standing by."
+  ru:
+    - "Ещё здесь?"
+    - "Что-нибудь ещё нужно?"
+    - "На посту."

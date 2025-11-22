@@ -1,0 +1,58 @@
+# LLM Service Configuration
+service:
+  name: "jarvis_llm_service"
+  version: "1.0.0"
+  host: "0.0.0.0"
+  port: 8002
+
+  # Model configuration
+  model:
+    # Selected model: Phi-3-mini for best quality/size/speed balance
+    name: "phi-3-mini-4k-instruct"
+    variant: "q4_k_m"  # Quantization level
+    repo_id: "microsoft/Phi-3-mini-4k-instruct-gguf"
+    filename: "Phi-3-mini-4k-instruct-q4.gguf"
+
+    # Local storage
+    models_dir: "/home/user/jarvis_manager/shared/models/llm"
+
+    # Auto-download on first run
+    auto_download: true
+
+  # Default character
+  default_character: "gerald"
+  characters_dir: "/home/user/jarvis_manager/services/llm_service/characters"
+
+  # Prompts configuration
+  prompts_dir: "/home/user/jarvis_manager/services/llm_service/prompts"
+
+  # Performance settings
+  performance:
+    max_workers: 2
+    response_timeout: 5  # seconds
+    cache_enabled: true
+    cache_ttl: 300  # seconds
+
+  # Context management
+  context:
+    enabled: true
+    max_exchanges: 5  # Last N conversation exchanges to remember
+    max_tokens_per_exchange: 200
+
+  # Safety settings
+  safety:
+    enable_filters: true
+    dangerous_commands_require_confirmation: true
+
+  # Logging
+  logging:
+    level: "INFO"
+    log_dir: "/home/user/jarvis_manager/logs"
+    log_file: "llm_service.log"
+
+# Language support
+languages:
+  supported:
+    - en
+    - ru
+  default: "en"

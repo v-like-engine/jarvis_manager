@@ -1,0 +1,16 @@
+# Ignore all model files (they are too large for git)
+*.gguf
+*.bin
+*.safetensors
+*.onnx
+*.pt
+*.pth
+
+# Ignore HuggingFace cache
+.cache/
+huggingface/
+
+# Keep README and download script
+!README.md
+!download_model.py
+!.gitignore

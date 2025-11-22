@@ -1,0 +1,80 @@
+# Model Configuration for ASR Service
+
+# ASR Models (Vosk)
+asr_models:
+  vosk:
+    en:
+      name: "vosk-model-small-en-us-0.15"
+      size_mb: 40
+      url: "https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip"
+      checksum: ""  # Optional MD5 checksum
+      path: "shared/models/asr/vosk-model-small-en-us-0.15"
+
+    ru:
+      name: "vosk-model-small-ru-0.22"
+      size_mb: 45
+      url: "https://alphacephei.com/vosk/models/vosk-model-small-ru-0.22.zip"
+      checksum: ""
+      path: "shared/models/asr/vosk-model-small-ru-0.22"
+
+# VAD Models
+vad_models:
+  silero:
+    name: "silero_vad"
+    version: "v4.0"
+    size_mb: 2
+    url: "https://raw.githubusercontent.com/snakers4/silero-vad/master/files/silero_vad.jit"
+    path: "shared/models/vad/silero_vad.jit"
+
+  webrtc:
+    name: "webrtc_vad"
+    note: "No model download needed - built into webrtcvad package"
+
+# Face Recognition Models
+face_models:
+  dlib:
+    face_detection:
+      name: "dlib_face_recognition_resnet_model_v1"
+      size_mb: 23
+      url: "http://dlib.net/files/dlib_face_recognition_resnet_model_v1.dat.bz2"
+      path: "shared/models/face/dlib_face_recognition_resnet_model_v1.dat"
+
+    landmark_detection:
+      name: "shape_predictor_68_face_landmarks"
+      size_mb: 99
+      url: "http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2"
+      path: "shared/models/face/shape_predictor_68_face_landmarks.dat"
+
+# Voice Biometrics Models
+voice_models:
+  speechbrain:
+    speaker_recognition:
+      name: "spkrec-ecapa-voxceleb"
+      size_mb: 80
+      huggingface_id: "speechbrain/spkrec-ecapa-voxceleb"
+      path: "shared/models/voice/spkrec-ecapa-voxceleb"
+      note: "Downloaded automatically by speechbrain"
+
+# TTS Models (optional - pyttsx3 uses system voices)
+tts_models:
+  silero:
+    en:
+      name: "v3_en"
+      size_mb: 50
+      url: "https://models.silero.ai/models/tts/en/v3_en.pt"
+      path: "shared/models/tts/silero_en_v3.pt"
+
+    ru:
+      name: "v3_ru"
+      size_mb: 50
+      url: "https://models.silero.ai/models/tts/ru/v3_ru.pt"
+      path: "shared/models/tts/silero_ru_v3.pt"
+
+  pyttsx3:
+    note: "Uses system TTS engines - no download needed"
+
+# Total size estimate
+total_size:
+  required_mb: 150  # ASR + VAD models
+  optional_mb: 252  # Face + Voice + TTS models
+  total_mb: 402

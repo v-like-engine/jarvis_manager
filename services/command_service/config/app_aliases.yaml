@@ -1,0 +1,175 @@
+# Application aliases and common name variations
+# Format:
+#   canonical_name:
+#     - "Alias 1"
+#     - "Alias 2"
+
+aliases:
+  # Browsers
+  yandex_browser:
+    - "Yandex Browser"
+    - "Yandex"
+    - "Yandex bro"
+    - "Yandex броузер"
+    - "Яндекс браузер"
+    - "Яндекс"
+
+  google_chrome:
+    - "Google Chrome"
+    - "Chrome"
+    - "Хром"
+
+  mozilla_firefox:
+    - "Mozilla Firefox"
+    - "Firefox"
+    - "Фаерфокс"
+    - "Мозилла"
+
+  microsoft_edge:
+    - "Microsoft Edge"
+    - "Edge"
+    - "Эдж"
+
+  opera:
+    - "Opera"
+    - "Opera Browser"
+    - "Опера"
+
+  brave:
+    - "Brave"
+    - "Brave Browser"
+
+  # Text Editors
+  notepad:
+    - "Notepad"
+    - "Note"
+    - "Блокнот"
+
+  notepad_plusplus:
+    - "Notepad++"
+    - "Notepad plus plus"
+    - "npp"
+
+  vscode:
+    - "Visual Studio Code"
+    - "VS Code"
+    - "Code"
+    - "VSCode"
+
+  sublime_text:
+    - "Sublime Text"
+    - "Sublime"
+
+  # Office
+  microsoft_word:
+    - "Microsoft Word"
+    - "Word"
+    - "Ворд"
+
+  microsoft_excel:
+    - "Microsoft Excel"
+    - "Excel"
+    - "Эксель"
+
+  microsoft_powerpoint:
+    - "Microsoft PowerPoint"
+    - "PowerPoint"
+    - "Презентация"
+
+  # Media Players
+  vlc:
+    - "VLC"
+    - "VLC Media Player"
+    - "VLC Player"
+
+  windows_media_player:
+    - "Windows Media Player"
+    - "WMP"
+    - "Media Player"
+
+  # Music
+  yandex_music:
+    - "Yandex Music"
+    - "Yandex Музыка"
+    - "Яндекс музыка"
+    - "Яндекс Music"
+
+  spotify:
+    - "Spotify"
+    - "Спотифай"
+
+  # Messengers
+  telegram:
+    - "Telegram"
+    - "Телеграм"
+    - "Телега"
+
+  whatsapp:
+    - "WhatsApp"
+    - "Ватсап"
+
+  discord:
+    - "Discord"
+    - "Дискорд"
+
+  skype:
+    - "Skype"
+    - "Скайп"
+
+  # Utilities
+  calculator:
+    - "Calculator"
+    - "Calc"
+    - "Калькулятор"
+
+  paint:
+    - "Paint"
+    - "MS Paint"
+    - "Паинт"
+
+  cmd:
+    - "Command Prompt"
+    - "CMD"
+    - "cmd.exe"
+    - "Командная строка"
+
+  powershell:
+    - "PowerShell"
+    - "Windows PowerShell"
+    - "pwsh"
+
+  task_manager:
+    - "Task Manager"
+    - "taskmgr"
+    - "Диспетчер задач"
+
+  control_panel:
+    - "Control Panel"
+    - "Панель управления"
+
+  # Development
+  git_bash:
+    - "Git Bash"
+    - "Git"
+
+  visual_studio:
+    - "Visual Studio"
+    - "VS"
+
+  pycharm:
+    - "PyCharm"
+
+  intellij_idea:
+    - "IntelliJ IDEA"
+    - "IDEA"
+
+  # File Managers
+  total_commander:
+    - "Total Commander"
+    - "TC"
+
+  explorer:
+    - "Windows Explorer"
+    - "Explorer"
+    - "File Explorer"
+    - "Проводник"

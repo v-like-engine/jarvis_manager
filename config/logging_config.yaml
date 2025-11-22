@@ -1,0 +1,109 @@
+# Logging Configuration for Gerald Desktop Manager
+
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  standard:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+
+  detailed:
+    format: '%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+
+  simple:
+    format: '%(levelname)s - %(message)s'
+
+  colorful:
+    (): colorlog.ColoredFormatter
+    format: '%(log_color)s%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+    log_colors:
+      DEBUG: cyan
+      INFO: green
+      WARNING: yellow
+      ERROR: red
+      CRITICAL: red,bg_white
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: colorful
+    stream: ext://sys.stdout
+
+  file_main:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: logs/gerald_main.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    encoding: utf8
+
+  file_asr:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: logs/asr_service.log
+    maxBytes: 10485760
+    backupCount: 5
+    encoding: utf8
+
+  file_llm:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: logs/llm_service.log
+    maxBytes: 10485760
+    backupCount: 5
+    encoding: utf8
+
+  file_command:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: logs/command_service.log
+    maxBytes: 10485760
+    backupCount: 5
+    encoding: utf8
+
+  error_file:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: detailed
+    filename: logs/errors.log
+    maxBytes: 10485760
+    backupCount: 10
+    encoding: utf8
+
+loggers:
+  asr_service:
+    level: DEBUG
+    handlers: [console, file_asr, error_file]
+    propagate: false
+
+  llm_service:
+    level: DEBUG
+    handlers: [console, file_llm, error_file]
+    propagate: false
+
+  command_service:
+    level: DEBUG
+    handlers: [console, file_command, error_file]
+    propagate: false
+
+  uvicorn:
+    level: INFO
+    handlers: [console, file_main]
+    propagate: false
+
+  uvicorn.access:
+    level: WARNING
+    handlers: [file_main]
+    propagate: false
+
+root:
+  level: INFO
+  handlers: [console, file_main, error_file]

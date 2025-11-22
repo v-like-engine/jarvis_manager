@@ -1,0 +1,172 @@
+# Safety Prompts for Dangerous Operations
+# These prompts are used when users request potentially harmful commands
+
+# Categories of dangerous operations
+dangerous_operations:
+
+  # File deletion
+  file_deletion:
+    en:
+      warning: "This will permanently delete {target}. This action cannot be undone."
+      prompt: "Are you sure you want to delete {target}?"
+      confirmation_required: true
+    ru:
+      warning: "Это навсегда удалит {target}. Это действие невозможно отменить."
+      prompt: "Вы уверены, что хотите удалить {target}?"
+      confirmation_required: true
+
+  # System shutdown/restart
+  system_power:
+    en:
+      warning: "This will {action} your system. All unsaved work will be lost."
+      prompt: "Confirm system {action}?"
+      confirmation_required: true
+    ru:
+      warning: "Это {action} вашу систему. Вся несохранённая работа будет потеряна."
+      prompt: "Подтвердить {action} системы?"
+      confirmation_required: true
+
+  # Format disk/partition
+  disk_format:
+    en:
+      warning: "This will erase ALL DATA on {target}. This is irreversible."
+      prompt: "Type 'YES' to confirm formatting {target}."
+      confirmation_required: true
+      requires_explicit_yes: true
+    ru:
+      warning: "Это удалит ВСЕ ДАННЫЕ на {target}. Это необратимо."
+      prompt: "Напишите 'ДА' для подтверждения форматирования {target}."
+      confirmation_required: true
+      requires_explicit_yes: true
+
+  # System configuration changes
+  system_config:
+    en:
+      warning: "Changing {setting} may affect system stability."
+      prompt: "Continue with this system change?"
+      confirmation_required: true
+    ru:
+      warning: "Изменение {setting} может повлиять на стабильность системы."
+      prompt: "Продолжить это системное изменение?"
+      confirmation_required: true
+
+  # Package/software removal
+  software_removal:
+    en:
+      warning: "Removing {package} may break system dependencies."
+      prompt: "Proceed with removal?"
+      confirmation_required: true
+    ru:
+      warning: "Удаление {package} может нарушить системные зависимости."
+      prompt: "Продолжить удаление?"
+      confirmation_required: true
+
+  # Root/admin operations
+  elevated_privileges:
+    en:
+      warning: "This operation requires elevated privileges and can modify system files."
+      prompt: "Execute with admin rights?"
+      confirmation_required: true
+    ru:
+      warning: "Эта операция требует повышенных привилегий и может изменить системные файлы."
+      prompt: "Выполнить с правами администратора?"
+      confirmation_required: true
+
+  # Network operations (firewall, etc.)
+  network_security:
+    en:
+      warning: "This will change network security settings: {action}"
+      prompt: "Modify security settings?"
+      confirmation_required: true
+    ru:
+      warning: "Это изменит настройки сетевой безопасности: {action}"
+      prompt: "Изменить настройки безопасности?"
+      confirmation_required: true
+
+  # Batch operations
+  batch_operation:
+    en:
+      warning: "This will affect {count} items: {action}"
+      prompt: "Execute batch operation?"
+      confirmation_required: true
+    ru:
+      warning: "Это затронет {count} элементов: {action}"
+      prompt: "Выполнить массовую операцию?"
+      confirmation_required: true
+
+# Safety levels
+safety_levels:
+  low:
+    requires_confirmation: false
+    show_warning: false
+
+  medium:
+    requires_confirmation: true
+    show_warning: true
+    allow_undo: true
+
+  high:
+    requires_confirmation: true
+    show_warning: true
+    requires_explicit_yes: true
+    allow_undo: false
+
+  critical:
+    requires_confirmation: true
+    show_warning: true
+    requires_explicit_yes: true
+    requires_double_confirmation: true
+    show_consequences: true
+    allow_undo: false
+
+# Command patterns that trigger safety checks
+dangerous_patterns:
+  - pattern: "rm -rf"
+    level: "high"
+    category: "file_deletion"
+
+  - pattern: "format"
+    level: "critical"
+    category: "disk_format"
+
+  - pattern: "shutdown"
+    level: "medium"
+    category: "system_power"
+
+  - pattern: "restart|reboot"
+    level: "medium"
+    category: "system_power"
+
+  - pattern: "delete.*system"
+    level: "high"
+    category: "file_deletion"
+
+  - pattern: "uninstall.*python|node|git"
+    level: "high"
+    category: "software_removal"
+
+  - pattern: "chmod 777"
+    level: "medium"
+    category: "system_config"
+
+  - pattern: "sudo"
+    level: "medium"
+    category: "elevated_privileges"
+
+# Safety prompt templates
+templates:
+  standard_warning:
+    en: "⚠️ WARNING: {warning}\n{prompt}"
+    ru: "⚠️ ВНИМАНИЕ: {warning}\n{prompt}"
+
+  critical_warning:
+    en: "🛑 CRITICAL: {warning}\n\n{consequences}\n\n{prompt}"
+    ru: "🛑 КРИТИЧНО: {warning}\n\n{consequences}\n\n{prompt}"
+
+  confirmation_request:
+    en: "Please confirm: {action} (yes/no)"
+    ru: "Подтвердите: {action} (да/нет)"
+
+  explicit_confirmation:
+    en: "Type 'YES' in capital letters to confirm: {action}"
+    ru: "Напишите 'ДА' заглавными буквами для подтверждения: {action}"

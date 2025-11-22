@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.log
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Models (too large for git)
+shared/models/llm/*.gguf
+shared/models/llm/*.bin
+shared/models/asr/*.zip
+shared/models/asr/vosk-model-*/
+shared/models/tts/*.pth
+shared/models/face/*.dat
+shared/models/vad/*.onnx
+
+# User Data
+shared/user_data.db
+shared/user_data.db-*
+
+# Logs
+logs/*.log
+logs/*.txt
+
+# Environment
+.env
+.env.local
+
+# Test Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+temp/
+tmp/

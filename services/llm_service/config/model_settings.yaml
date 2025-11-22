@@ -1,0 +1,94 @@
+# LLM Model Inference Settings
+# These parameters control text generation quality and behavior
+
+# Default generation parameters (can be overridden by character settings)
+generation:
+  # Temperature: Controls randomness (0.0 = deterministic, 1.0 = very random)
+  # Gerald uses 0.7 for natural but consistent responses
+  temperature: 0.7
+
+  # Top-p (nucleus sampling): Consider tokens with cumulative probability p
+  # Higher = more diverse, lower = more focused
+  top_p: 0.9
+
+  # Top-k: Consider only the k most likely next tokens
+  # 0 = disabled, 40-100 is typical
+  top_k: 40
+
+  # Repetition penalty: Penalize repeated tokens
+  # 1.0 = no penalty, >1.0 = penalize repetition
+  repetition_penalty: 1.1
+
+  # Frequency penalty: Reduce likelihood of frequent tokens
+  frequency_penalty: 0.0
+
+  # Presence penalty: Reduce likelihood of tokens already present
+  presence_penalty: 0.0
+
+  # Maximum tokens to generate
+  max_tokens: 150
+
+  # Stop sequences (generation stops when these are encountered)
+  stop_sequences:
+    - "\n\n\n"
+    - "User:"
+    - "Human:"
+    - "Assistant:"
+
+# Model loading parameters (llama.cpp specific)
+model:
+  # Number of layers to offload to GPU (0 = CPU only)
+  n_gpu_layers: 0
+
+  # Context window size (tokens)
+  # Phi-3-mini supports up to 4096
+  n_ctx: 2048
+
+  # Batch size for prompt processing
+  n_batch: 512
+
+  # Number of threads for generation
+  # 0 = auto-detect based on CPU cores
+  n_threads: 0
+
+  # Use memory mapping for faster model loading
+  use_mmap: true
+
+  # Lock model in memory (prevents swapping)
+  use_mlock: false
+
+  # Seed for reproducibility (null = random)
+  seed: null
+
+  # Verbose output for debugging
+  verbose: false
+
+# Character-specific overrides
+character_overrides:
+  gerald:
+    temperature: 0.7
+    max_tokens: 100  # Gerald is concise
+    repetition_penalty: 1.15  # Avoid repetitive responses
+    top_p: 0.85  # Slightly more focused
+
+# Scenario-specific settings
+scenario_settings:
+  chat:
+    temperature: 0.7
+    max_tokens: 150
+
+  confirmation:
+    temperature: 0.3  # More deterministic for commands
+    max_tokens: 50
+
+  safety_warning:
+    temperature: 0.3
+    max_tokens: 80
+
+  greeting:
+    temperature: 0.5
+    max_tokens: 30
+
+  refusal:
+    temperature: 0.3
+    max_tokens: 40

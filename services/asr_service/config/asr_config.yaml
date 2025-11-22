@@ -1,0 +1,123 @@
+# ASR Service Configuration
+
+# Service settings
+service:
+  name: "Gerald ASR Service"
+  host: "localhost"
+  port: 8001
+  debug: false
+  workers: 1
+
+# Audio input settings
+audio:
+  sample_rate: 16000
+  channels: 1
+  chunk_size: 1024
+  device_index: null  # null = default device
+  buffer_seconds: 0.5
+
+# Voice Activity Detection (VAD)
+vad:
+  enabled: true
+  engine: "silero"  # silero or webrtc
+  threshold: 0.5
+  min_speech_duration_ms: 250
+  max_speech_duration_s: 30
+  padding_duration_ms: 300
+  frame_duration_ms: 30  # For WebRTC VAD: 10, 20, or 30 ms
+
+# Speech Recognition
+asr:
+  engine: "vosk"  # vosk or whisper
+  languages:
+    - "en"
+    - "ru"
+  default_language: "en"
+  confidence_threshold: 0.6
+  auto_detect_language: true
+
+  # Model settings
+  models:
+    en:
+      name: "vosk-model-small-en-us-0.15"
+      path: "shared/models/asr/vosk-model-small-en-us-0.15"
+      download_url: "https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip"
+    ru:
+      name: "vosk-model-small-ru-0.22"
+      path: "shared/models/asr/vosk-model-small-ru-0.22"
+      download_url: "https://alphacephei.com/vosk/models/vosk-model-small-ru-0.22.zip"
+
+# Text-to-Speech
+tts:
+  engine: "pyttsx3"  # pyttsx3 or silero
+  enabled: true
+
+  # pyttsx3 settings
+  pyttsx3:
+    rate: 180  # Words per minute
+    volume: 0.9  # 0.0 to 1.0
+    voice_id: null  # null = default, or specific voice ID
+
+  # Gerald's voice personality
+  character:
+    name: "gerald"
+    pitch: -20  # Lower pitch for authoritative sound
+    rate_modifier: 1.0
+    volume_modifier: 1.0
+
+# Face Recognition
+face_recognition:
+  enabled: true
+  detection_method: "hog"  # hog or cnn (cnn is more accurate but slower)
+  tolerance: 0.6  # Lower = more strict
+  num_jitters: 1  # Higher = more accurate but slower
+  camera_index: 0  # Webcam index
+  capture_timeout: 10  # Seconds to capture face
+  min_face_size: 80  # Minimum face size in pixels
+
+# Voice Biometrics (Speaker Identification)
+voice_biometrics:
+  enabled: false  # Optional feature
+  model: "speechbrain/spkrec-ecapa-voxceleb"
+  embedding_dim: 192
+  similarity_threshold: 0.7
+  enrollment_duration: 5  # Seconds of audio for enrollment
+
+# User Database
+database:
+  path: "shared/user_data.db"
+  backup_enabled: true
+  backup_interval: 3600  # Seconds
+
+# Performance
+performance:
+  max_cpu_percent: 5  # Target max CPU when idle
+  threading_enabled: true
+  async_processing: true
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "logs/asr_service.log"
+  max_size_mb: 50
+  backup_count: 3
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Command parsing
+commands:
+  # Trigger words for various command types
+  app_launch:
+    en: ["open", "launch", "start", "run"]
+    ru: ["открой", "запусти", "открыть", "запустить"]
+
+  app_close:
+    en: ["close", "exit", "quit", "stop"]
+    ru: ["закрой", "закрыть", "выключи", "останови"]
+
+  recognize_me:
+    en: ["recognize me", "who am i", "identify me"]
+    ru: ["узнай меня", "кто я", "распознай меня"]
+
+  system:
+    en: ["shutdown", "restart", "sleep", "lock"]
+    ru: ["выключи", "перезагрузи", "спать", "заблокируй"]

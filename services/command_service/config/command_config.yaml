@@ -1,0 +1,119 @@
+# Command Service Configuration
+
+service:
+  name: "command_service"
+  version: "1.0.0"
+  host: "0.0.0.0"
+  port: 8002
+  log_level: "INFO"
+
+# Command execution settings
+execution:
+  # Timeout for command execution (seconds)
+  default_timeout: 30
+  terminal_timeout: 60
+  app_launch_timeout: 15
+
+  # Maximum concurrent command executions
+  max_concurrent: 10
+
+# App discovery settings
+app_discovery:
+  # Enable caching of installed apps
+  enable_cache: true
+
+  # Cache refresh interval (seconds)
+  cache_refresh_interval: 3600  # 1 hour
+
+  # Fuzzy match threshold (0-100)
+  fuzzy_threshold: 70
+
+  # Scan locations for installed apps
+  scan_locations:
+    - "C:\\ProgramData\\Microsoft\\Windows\\Start Menu"
+    - "%APPDATA%\\Microsoft\\Windows\\Start Menu"
+    - "C:\\Program Files"
+    - "C:\\Program Files (x86)"
+
+  # Registry paths to scan
+  registry_paths:
+    - "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths"
+    - "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths"
+
+# Terminal command settings
+terminal:
+  # Default shell
+  default_shell: "cmd"  # "cmd" or "powershell"
+
+  # Enable command history
+  enable_history: true
+
+  # Maximum history size
+  max_history: 100
+
+# File operations settings
+file_operations:
+  # Enable safety checks
+  enable_safety_checks: true
+
+  # Require confirmation for operations on files larger than (MB)
+  large_file_threshold: 100
+
+  # Maximum file size for operations (MB)
+  max_file_size: 1000
+
+# Music control settings
+music:
+  # Preferred music player
+  preferred_player: "yandex_music"  # or "spotify", "vlc", etc.
+
+  # Volume step (0-100)
+  volume_step: 5
+
+# Safety settings
+safety:
+  # Enable safety checker
+  enable_safety_checks: true
+
+  # Default action for unknown commands
+  unknown_command_action: "confirm"  # "confirm", "reject", or "allow"
+
+  # Enable confirmation for dangerous operations
+  require_confirmations: true
+
+# Language settings
+language:
+  # Default language for Gerald responses
+  default: "en"  # "en" or "ru"
+
+  # Supported languages
+  supported:
+    - "en"
+    - "ru"
+
+# Logging
+logging:
+  # Log file path
+  log_file: "logs/command_service.log"
+
+  # Log rotation
+  max_bytes: 10485760  # 10 MB
+  backup_count: 5
+
+# Message queue settings (RabbitMQ)
+message_queue:
+  host: "localhost"
+  port: 5672
+  username: "guest"
+  password: "guest"
+  exchange: "gerald"
+
+  # Topics to subscribe to
+  subscribe_topics:
+    - "commands.execute"
+
+  # Topics to publish to
+  publish_topics:
+    - "commands.result"
+    - "commands.confirmation"
+    - "commands.status"

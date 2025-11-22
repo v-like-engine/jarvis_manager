@@ -1,0 +1,57 @@
+# Gerald Desktop Manager - Testing Dependencies
+
+# Core Testing Framework
+pytest>=7.4.3
+pytest-asyncio>=0.21.1
+pytest-cov>=4.1.0
+pytest-mock>=3.11.1
+pytest-timeout>=2.1.0
+pytest-benchmark>=4.0.0
+pytest-xdist>=3.5.0  # Parallel test execution
+
+# HTTP Testing
+httpx>=0.25.2
+requests>=2.31.0
+requests-mock>=1.11.0
+
+# Performance Testing
+memory-profiler>=0.61.0
+psutil>=5.9.6
+py-cpuinfo>=9.0.0
+
+# Code Quality
+black>=23.11.0
+flake8>=6.1.0
+flake8-docstrings>=1.7.0
+mypy>=1.7.1
+pylint>=3.0.3
+bandit>=1.7.5  # Security linting
+
+# Mock Data Generation
+faker>=21.0.0
+factory-boy>=3.3.0
+
+# Audio Testing (for ASR service tests)
+soundfile>=0.12.1
+librosa>=0.10.1
+pydub>=0.25.1
+
+# Database Testing
+pytest-sqlite>=0.1.0
+
+# Fixtures and Utilities
+pytest-fixtures>=0.1.0
+pytest-datadir>=1.5.0
+
+# Coverage Reports
+coverage[toml]>=7.3.0
+
+# Documentation Testing
+pytest-md>=0.2.0
+
+# Load Testing (optional)
+locust>=2.18.0
+
+# Type Checking for Tests
+types-requests>=2.31.0
+types-PyYAML>=6.0.12

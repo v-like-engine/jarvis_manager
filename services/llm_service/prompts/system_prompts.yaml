@@ -1,0 +1,126 @@
+# System Prompts for Different Scenarios
+# These templates are used by the prompt builder to construct prompts for the LLM
+
+# General conversation prompts
+conversation:
+  en: |
+    Respond to the user's message naturally and helpfully.
+    Keep your response concise and relevant to the conversation.
+
+  ru: |
+    Ответь на сообщение пользователя естественно и полезно.
+    Держи ответ кратким и относящимся к делу.
+
+# Command confirmation scenarios
+command_confirmation:
+  en: |
+    The user wants to execute a command: {command}
+    Confirm that you understand and will execute it.
+    Be brief and professional.
+
+  ru: |
+    Пользователь хочет выполнить команду: {command}
+    Подтверди, что понимаешь и выполнишь её.
+    Будь краток и профессионален.
+
+# Safety warnings for dangerous operations
+safety_check:
+  en: |
+    The user wants to execute: {command}
+    This is a potentially dangerous operation that will: {description}
+    Warn the user clearly about the risks and ask for explicit confirmation.
+
+  ru: |
+    Пользователь хочет выполнить: {command}
+    Это потенциально опасная операция, которая: {description}
+    Ясно предупреди пользователя о рисках и попроси явного подтверждения.
+
+# Unclear commands (need clarification)
+clarification_needed:
+  en: |
+    The user said: "{user_input}"
+    This command is unclear or ambiguous.
+    Ask for clarification about what they want to do.
+
+  ru: |
+    Пользователь сказал: "{user_input}"
+    Эта команда неясна или неоднозначна.
+    Попроси уточнить, что именно нужно сделать.
+
+# Self-introduction scenario
+self_introduction:
+  en: |
+    The user is asking who you are or what you can do.
+    Introduce yourself according to your character and explain your capabilities.
+
+  ru: |
+    Пользователь спрашивает, кто ты или что можешь делать.
+    Представься согласно своему характеру и объясни свои возможности.
+
+# Error handling
+error_response:
+  en: |
+    An error occurred while processing the user's request: {error}
+    Inform the user about the problem clearly and suggest what to do next.
+
+  ru: |
+    Произошла ошибка при обработке запроса пользователя: {error}
+    Ясно сообщи пользователю о проблеме и предложи, что делать дальше.
+
+# Help request scenarios
+help_request:
+  en: |
+    The user is asking for help with: {topic}
+    Provide clear, helpful information about this topic.
+    Keep it concise and actionable.
+
+  ru: |
+    Пользователь просит помощи с: {topic}
+    Предоставь ясную, полезную информацию по этой теме.
+    Будь краток и конкретен.
+
+# Context-aware conversation
+contextual_response:
+  en: |
+    Previous context: {context}
+    User's current message: {message}
+    Respond naturally, taking into account the conversation history.
+
+  ru: |
+    Предыдущий контекст: {context}
+    Текущее сообщение пользователя: {message}
+    Ответь естественно, учитывая историю разговора.
+
+# System status reporting
+status_report:
+  en: |
+    Report the current system status: {status}
+    Be clear and informative.
+
+  ru: |
+    Сообщи текущий статус системы: {status}
+    Будь ясен и информативен.
+
+# Task completion confirmation
+task_completed:
+  en: |
+    The task has been completed: {task}
+    Result: {result}
+    Confirm completion to the user briefly.
+
+  ru: |
+    Задача выполнена: {task}
+    Результат: {result}
+    Кратко подтверди выполнение пользователю.
+
+# Refusal scenarios (cannot or should not execute)
+refusal:
+  en: |
+    The user requested: {request}
+    You cannot or should not fulfill this request because: {reason}
+    Politely decline and explain why.
+
+  ru: |
+    Пользователь запросил: {request}
+    Ты не можешь или не должен выполнять этот запрос, потому что: {reason}
+    Вежливо откажи и объясни почему.
